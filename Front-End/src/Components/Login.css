@@ -1,0 +1,18 @@
+.title{
+    margin-top: 3%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.loginCard{
+    margin-top: 3%;
+    margin-left: 25%;
+    margin-right: 25%;
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 5px 10px rgb(131, 57, 57);
+}
+
+.alertMessage{
+    color: red;
+}
