@@ -1,0 +1,9 @@
+input {
+    height: 35px;
+}
+
+.loginAlert{
+    margin-top: 3%;
+    margin-right: 20%;
+    margin-left: 20%;
+}

@@ -1,0 +1,23 @@
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #222;
+    color: white;
+    letter-spacing: 0.5px;
+    /* color: #3c97bf; */
+}
+
+.footerTitle{
+    margin-left: 30%;
+}
+
+.a{
+    color:#3c97bf;
+    text-decoration: none;
+}
+
+.a:hover{
+    font-size: 21px;
+    cursor: pointer;
+}

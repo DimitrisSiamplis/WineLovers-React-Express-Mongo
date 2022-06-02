@@ -1,0 +1,26 @@
+.item{
+    margin-top: 5%; 
+    
+}
+
+.image {
+    width: 9%;
+}
+.image:hover{
+    /* width: 10%; */
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.twoDivs{
+    display: flex;
+}
+
+.filters{
+    width: 30%;
+    margin-top: 4%;
+    margin-left: 2%;
+    border: 1px solid;
+    box-shadow: 5px 10px rgb(131, 57, 57);
+    height: 500px;
+}

@@ -1,13 +1,18 @@
 import React from "react";
 import { Button, Container, Row, Col, Form } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./Login.css";
 import { useState } from "react";
 import { useEffect } from "react";
+import "./Login.css";
+import Cookies from "universal-cookie";
 
-const Login = () => {
+const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [testLogin, setTestLogin] = useState(true);
+
+  const onTriger = (email) =>{
+    props.handleCallback(email)
+  }
 
   const isLogin = () => {
     let userDetails = {
@@ -21,24 +26,36 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((json) => {
-       
         if (json.status === true) {
-          alert("Successful Lofin")
+          
+          setTestLogin(true);
+          const cookies = new Cookies();
+          cookies.set("email", json.email, { path: "/" });
+          console.log(cookies.get("email"));
+          onTriger(json.email)
+          
         } else {
-          alert("Error Login")
+          alert("Error logim");
+          setTestLogin(false);
         }
       });
   };
 
-
-
   return (
     <div>
-      <div className="title">
-        <h1>WineLovers</h1>
-        <hr />
-      </div>
       <div className="loginCard">
+        <Container>
+          <Row>
+            <Col xs={6}>
+              <p className="loginOrRegister">Login&nbsp;Form</p>
+            </Col>
+            <Col xs={4}></Col>
+            <Col xs={2}></Col>
+          </Row>
+        </Container>
+
+        <hr />
+
         <Form>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
@@ -54,7 +71,14 @@ const Login = () => {
               We'll never share your email with anyone else.
             </Form.Text>
             {email.length > 0 && email.length < 5 && (
-              <p className="alertMessage">Email must include at least 5 characters!</p>
+              <p className="alertMessage">
+                Email must include at least 5 characters!
+              </p>
+            )}
+            {!testLogin && (
+              <p className="alertMessage">
+                Email or Password are incorect!Try again!
+              </p>
             )}
           </Form.Group>
 
@@ -72,7 +96,11 @@ const Login = () => {
           <Form.Group className="mb-3" controlId="formBasicCheckbox">
             <Form.Check type="checkbox" label="Check me out" />
           </Form.Group>
-          <Button variant="primary" onClick={isLogin} disabled={ email === "" || password ==="" ||  email.length < 5}>
+          <Button
+            variant="primary"
+            onClick={isLogin}
+            disabled={email === "" || password === "" || email.length < 5}
+          >
             Submit
           </Button>
         </Form>

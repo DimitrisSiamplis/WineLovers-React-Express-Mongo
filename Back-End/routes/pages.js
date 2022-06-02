@@ -96,12 +96,47 @@ router.post("/login", async (req, res) => {
   if (user) {
     res.send({
       status: true,
+      email: user.Email,
     });
   } else {
     res.send({
       status: false,
     });
   }
+});
+
+router.post("/register", async (req, res) => {
+  let user = await User.findOne({
+    Email: req.body.useDetails.email,
+  });
+  console.log(user);
+  if (user) {
+    res.send({
+      alreadyExist: true,
+    });
+  } else {
+    newUser = new User({
+      FirstName: req.body.useDetails.firstName,
+      LastName: req.body.useDetails.lastName,
+      Email: req.body.useDetails.email,
+      Password: req.body.useDetails.password,
+      Birthday: req.body.useDetails.birthday,
+      Gender: req.body.useDetails.sex,
+      Mobile: req.body.useDetails.phone,
+      Address: req.body.useDetails.address,
+      Number: req.body.useDetails.number,
+      Age: req.body.useDetails.age,
+    });
+    // await newUser.save();
+    res.send({
+      alreadyExist: false,
+    });
+  }
+});
+
+router.get("/getWines", async (req, res) => {
+  let wine = await Wine.find();
+  res.send(wine)
 });
 
 // router.get("*", (req, res) => {
