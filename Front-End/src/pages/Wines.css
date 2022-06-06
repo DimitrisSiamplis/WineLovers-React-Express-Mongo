@@ -4,10 +4,10 @@
 }
 
 .image {
-    width: 9%;
+    width: 11%;
 }
 .image:hover{
-    /* width: 10%; */
+    transform: scale(1.8);
     opacity: 0.8;
     cursor: pointer;
 }
@@ -23,4 +23,23 @@
     border: 1px solid;
     box-shadow: 5px 10px rgb(131, 57, 57);
     height: 500px;
+}
+
+.modalTitle{
+    font-size: 15px;
+}
+
+.mb-3{
+    font-size: 13px;
+}
+
+.showFilters{
+    margin-top: 3%;
+    margin-left: 3%;
+    font-size: 21px;
+}
+
+.showFilters:hover{
+    font-size: 23px;
+    cursor: pointer;
 }

@@ -3,7 +3,9 @@ import "./Navigation.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWineBottle } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-
+import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faBlog } from "@fortawesome/free-solid-svg-icons";
 import {
   Button,
   Container,
@@ -17,6 +19,7 @@ import {
 
 const Navigation = (props) => {
   const onTriger = () => {
+    
     props.handleCallback();
   };
 
@@ -26,6 +29,7 @@ const Navigation = (props) => {
         <Container>
           <Navbar.Brand href="/">WineLovers</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          &nbsp;&nbsp;
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/wines">
@@ -36,40 +40,60 @@ const Navigation = (props) => {
                   size="lg"
                 />{" "}
               </Nav.Link>
-              <Nav.Link href="#pricing">Pricing</Nav.Link>
+              &nbsp;&nbsp;
+              <Nav.Link href="/card">
+                Card &nbsp;
+                <FontAwesomeIcon
+                  className="faIcons"
+                  icon={faCartPlus}
+                  size="lg"
+                />{" "}
+              </Nav.Link>
+              &nbsp;&nbsp;
+              <Nav.Link href="/history">
+                History &nbsp;
+                <FontAwesomeIcon
+                  className="faIcons"
+                  icon={faClock}
+                  size="lg"
+                />{" "}
+              </Nav.Link>
+              &nbsp;&nbsp;
+              <Nav.Link href="/blog">
+                Blog &nbsp;
+                <FontAwesomeIcon
+                  className="faIcons"
+                  icon={faBlog}
+                  size="lg"
+                />{" "}
+              </Nav.Link>
+              &nbsp;&nbsp;
+              <NavDropdown title="Actions" id="collasible-nav-dropdown">
+                <NavDropdown.Item href="#action/3.2">Help Us</NavDropdown.Item>
 
-              <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
+                {/* <NavDropdown.Divider /> */}
                 <NavDropdown.Item href="#action/3.4">
-                  Separated link
+                  Statistics
                 </NavDropdown.Item>
               </NavDropdown>
             </Nav>
             <Nav>
-              <Nav.Link href="#deets">
+              <Nav.Link href="/profile">
                 Profile &nbsp;{" "}
                 <FontAwesomeIcon className="faIcons" icon={faUser} size="lg" />{" "}
               </Nav.Link>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <NavDropdown title="Settings" id="collasible-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">
                   Change Password
                 </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
-                </NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.2">Add Wine</NavDropdown.Item>
 
                 <NavDropdown.Divider />
                 <NavDropdown.Item
                   onClick={() => {
                     onTriger();
+                    
                   }}
                 >
                   Logout

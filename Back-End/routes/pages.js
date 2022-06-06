@@ -136,7 +136,56 @@ router.post("/register", async (req, res) => {
 
 router.get("/getWines", async (req, res) => {
   let wine = await Wine.find();
-  res.send(wine)
+  res.send(wine);
+});
+
+router.get("/getUser/:email", async (req, res) => {
+  var email = req.params.email;
+  console.log(email);
+  let user = await User.findOne({ Email: email });
+  res.send({
+    user: user,
+  });
+});
+
+router.get("/getWine/:wineId", async (req, res) => {
+  var wineId = req.params.wineId;
+  let wine = await Wine.findOne({ _id: wineId });
+  res.send({
+    wine: wine,
+  });
+});
+
+router.post("/getCard", async (req, res) => {
+  let user = await User.findOne({ Email: req.body.email });
+  let card = await Card.find({ IsCompleted: false, UserId: user._id });
+  let cardsid = [];
+  let cards = [];
+  for (const item in card) {
+    cardsid.push(card[item].WineId);
+  }
+
+  let wine = await Wine.find({ _id: cardsid });
+
+  for (const item in card) {
+    cards.push({
+      wine: wine[item],
+      card: card[item],
+    });
+  }
+  res.send({
+    card: cards,
+  });
+});
+
+router.post("/addToCard", async (req, res) => {
+  console.log(req.body);
+  let user = await User.find({ Email: req.body.email });
+  if (user) {
+  }
+  res.send({
+    status: true,
+  });
 });
 
 // router.get("*", (req, res) => {

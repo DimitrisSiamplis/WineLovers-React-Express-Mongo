@@ -7,7 +7,10 @@ import Footer from "./Footer";
 import Navigation from "./Components/Navigation";
 import Wines from "./pages/Wines";
 import Home from "./pages/Home";
+import Card from "./pages/Card";
 import { Button, Container, Row, Col, Form, Alert } from "react-bootstrap";
+import Profile from "./pages/Profile";
+import WineProfile from "./pages/WineProfile";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 
@@ -25,15 +28,17 @@ function App() {
     console.log(email);
     setEmail(email);
     setLoginMessage(true);
-    setTimeout(() => {setLoginMessage(false)} , 6000);
+    setTimeout(() => {
+      setLoginMessage(false);
+    }, 6000);
   };
 
   const handleLogoutCallback = () => {
-    cookies.remove("email");
+    const cookie = new Cookies();
+    cookie.remove("email");
     setEmail(undefined);
   };
 
-  
   // ------- Initial Check if user is Login ----------
   useEffect(() => {
     if (userEmail) {
@@ -45,7 +50,8 @@ function App() {
 
   // ---------- set that user is login --------------
   useEffect(() => {
-    if (userEmail) {
+    console.log("logout", Email);
+    if (userEmail !== undefined) {
       setIsLogin(true);
     } else {
       setIsLogin(false);
@@ -57,7 +63,11 @@ function App() {
       {isLogin && (
         <div>
           <Navigation handleCallback={handleLogoutCallback} />
-          {loginMessage && <Alert className="loginAlert" variant="success">User succesfully Login !</Alert>}
+          {loginMessage && (
+            <Alert className="loginAlert" variant="success">
+              User succesfully Login !
+            </Alert>
+          )}
           <Switch>
             <Route exact path="/">
               <Home />
@@ -65,6 +75,16 @@ function App() {
 
             <Route exact path="/wines">
               <Wines />
+            </Route>
+            <Route exact path="/wine/:id">
+              <WineProfile />
+            </Route>
+            <Route exact path="/card">
+              <Card />
+            </Route>
+
+            <Route exact path="/profile">
+              <Profile />
             </Route>
           </Switch>
         </div>

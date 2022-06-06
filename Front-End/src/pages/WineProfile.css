@@ -1,0 +1,13 @@
+.wineImage {
+    width: 4%;
+}
+.wineImage:hover{
+    transform: scale(1.8);
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.wineContainer{
+    margin-left: 18%;
+    width: 60%;
+}
