@@ -8,6 +8,7 @@ import Navigation from "./Components/Navigation";
 import Wines from "./pages/Wines";
 import Home from "./pages/Home";
 import Card from "./pages/Card";
+import History from "./pages/History";
 import { Button, Container, Row, Col, Form, Alert } from "react-bootstrap";
 import Profile from "./pages/Profile";
 import WineProfile from "./pages/WineProfile";
@@ -21,11 +22,9 @@ function App() {
 
   const cookies = new Cookies();
 
-  console.log(cookies.get("email"));
   var userEmail = cookies.get("email");
 
   const handleCallback = (email) => {
-    console.log(email);
     setEmail(email);
     setLoginMessage(true);
     setTimeout(() => {
@@ -50,7 +49,6 @@ function App() {
 
   // ---------- set that user is login --------------
   useEffect(() => {
-    console.log("logout", Email);
     if (userEmail !== undefined) {
       setIsLogin(true);
     } else {
@@ -81,6 +79,10 @@ function App() {
             </Route>
             <Route exact path="/card">
               <Card />
+            </Route>
+
+            <Route exact path="/history">
+              <History />
             </Route>
 
             <Route exact path="/profile">

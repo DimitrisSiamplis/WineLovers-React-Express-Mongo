@@ -178,13 +178,39 @@ router.post("/getCard", async (req, res) => {
   });
 });
 
-router.post("/addToCard", async (req, res) => {
-  console.log(req.body);
-  let user = await User.find({ Email: req.body.email });
-  if (user) {
-  }
+router.post("/completeOrder", async (req, res) => {
+  let user = await User.findOne({ Email: req.body.email });
+
+  history = new History({
+    WinesList: req.body.wineList,
+    UserId: user._id,
+    Date: new Date(),
+    Price: req.body.totalPrice,
+  });
+  console.log(history);
+  await history.save();
   res.send({
     status: true,
+  });
+});
+
+router.post("/getHistory", async (req, res) => {
+  let user = await User.findOne({ Email: req.body.email });
+
+  let history = await History.find({ UserId: user._id });
+
+  let WinesArray = [];
+  for (const key in history) {
+
+    for (const key1 in history[key].WinesList) {
+      WinesArray.push(history[key].WinesList[key1]);
+    }
+  }
+  let wines = await Wine.find({ _id: WinesArray });
+
+  res.send({
+    history: history,
+    wines: wines,
   });
 });
 

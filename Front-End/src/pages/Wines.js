@@ -2,7 +2,15 @@ import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
-import { Button, Container, Row, Col, Form, Modal } from "react-bootstrap";
+import {
+  Button,
+  Container,
+  Row,
+  Col,
+  Form,
+  Modal,
+  Alert,
+} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +20,8 @@ const Wines = () => {
   const [wines, setWines] = useState([]);
   const [selectedWineId, setSelectedWineId] = useState("");
   const [showFilter, setShowFilter] = useState(true);
+  const [alreadyExistInCard, setAlreadyExistInCard] = useState(false);
+  const [succesfullyAddedToCard, setSuccesfullyAddedToCard] = useState(false);
 
   // -------- MODAL
   const [show, setShow] = useState(false);
@@ -22,13 +32,13 @@ const Wines = () => {
   // --------- Set COOKIES
   const cookies = new Cookies();
   var user = cookies.get("email");
+  console.log(cookies.get("card"));
 
   //------ initial Wines --------------
   const getWines = () => {
     fetch("http://localhost:4000/getWines")
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         setWines(json);
       });
   };
@@ -39,21 +49,32 @@ const Wines = () => {
 
   // --------- Add To Card ----------------
 
-  const onAddToCardHandler = (id) => {
-    let cardDetails = {
-      wineId: id,
-      email: user,
-    };
-    fetch("http://localhost:4000/addToCard", {
-      method: "POST",
-      body: JSON.stringify(cardDetails),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-        setShow(false);
-      });
+  const onAddToCardHandler = (wineArray) => {
+    // ----------- save card details to cookies ---------------
+    const cookies = new Cookies();
+    var isCardEmty = cookies.get("card");
+
+    if (isCardEmty === "" || isCardEmty === undefined) {
+      cookies.set("card", wineArray + "," + amount, { path: "/" });
+    } else {
+      var editedWineArray = wineArray.slice(0, -1);
+      if (isCardEmty.includes(editedWineArray)) {
+        setAlreadyExistInCard(true);
+        setTimeout(() => {
+          setAlreadyExistInCard(false);
+        }, 3000);
+      } else {
+        setSuccesfullyAddedToCard(true);
+        setTimeout(() => {
+          setSuccesfullyAddedToCard(false);
+        }, 3000);
+        setAlreadyExistInCard(false);
+        var newCardCookie = isCardEmty + "|" + wineArray + "," + amount;
+        cookies.set("card", newCardCookie, { path: "/" });
+      }
+    }
+    setAmount(0);
+    handleClose();
   };
 
   return (
@@ -76,6 +97,9 @@ const Wines = () => {
               max="20"
               placeholder="Chooce Amount"
             />
+            {(amount === 0 || amount < 0 || amount > 20) && (
+              <p className="alertMessage">Range 1-20 wines!</p>
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
@@ -87,7 +111,7 @@ const Wines = () => {
                 amount === 0 || amount === "" || amount < 0 || amount > 20
               }
               onClick={() => {
-                onAddToCardHandler(selectedWineId.split(",")[1]);
+                onAddToCardHandler(selectedWineId);
               }}
             >
               Add to card
@@ -95,6 +119,16 @@ const Wines = () => {
           </Modal.Footer>
         </Modal>
       </>
+      {succesfullyAddedToCard && (
+        <Alert className="alertCardMessage" key="danger" variant="success">
+          Wine added succesfully to card!
+        </Alert>
+      )}
+      {alreadyExistInCard && (
+        <Alert className="alertCardMessage" key="danger" variant="danger">
+          This wine Already Exist in Card!
+        </Alert>
+      )}
       <div className="twoDivs">
         <FontAwesomeIcon
           className="showFilters"
@@ -226,7 +260,19 @@ const Wines = () => {
                                 title="Add to Card"
                                 onClick={() => {
                                   setSelectedWineId(
-                                    item._id + "," + item.WineName
+                                    item._id +
+                                      "," +
+                                      item.WineName +
+                                      "," +
+                                      item._id +
+                                      "," +
+                                      item.Color +
+                                      "," +
+                                      item.Type +
+                                      "," +
+                                      item.Price +
+                                      "," +
+                                      item.ImageUrl
                                   );
                                   handleShow(item._id);
                                 }}

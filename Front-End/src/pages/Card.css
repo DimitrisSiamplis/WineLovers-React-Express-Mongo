@@ -191,3 +191,9 @@
     opacity: 0.8;
     cursor: pointer;
 }
+
+
+.emptyAlert{
+    margin-top: 2%;
+    margin-right: 60%;
+}

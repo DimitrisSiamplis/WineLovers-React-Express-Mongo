@@ -43,3 +43,18 @@
     font-size: 23px;
     cursor: pointer;
 }
+
+
+.alertCardMessage{
+    margin-left: 90%;
+    margin-right: 1%;
+    margin-top: 2%;
+    /* top: 30px; */
+    top: 5%;
+    right: 0px;
+    opacity: 0.9;
+    z-index: 1000;
+    position: fixed;
+    width: 30%;
+   
+}
