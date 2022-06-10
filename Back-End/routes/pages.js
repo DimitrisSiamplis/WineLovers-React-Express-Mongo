@@ -139,9 +139,13 @@ router.get("/getWines", async (req, res) => {
   res.send(wine);
 });
 
+router.get("/getBlogs", async (req, res) => {
+  let blogQuestion = await BlogQuestion.find();
+  res.send(blogQuestion);
+});
+
 router.get("/getUser/:email", async (req, res) => {
   var email = req.params.email;
-  console.log(email);
   let user = await User.findOne({ Email: email });
   res.send({
     user: user,
@@ -153,6 +157,17 @@ router.get("/getWine/:wineId", async (req, res) => {
   let wine = await Wine.findOne({ _id: wineId });
   res.send({
     wine: wine,
+  });
+});
+
+router.get("/getApliesToQuestion/:questionId", async (req, res) => {
+  var questionId = req.params.questionId;
+  console.log(questionId);
+  
+  let aplyQuestion = await AplyQuestion.find({QuestionId :questionId });
+  
+  res.send({
+    aplyQuestion
   });
 });
 
@@ -201,7 +216,6 @@ router.post("/getHistory", async (req, res) => {
 
   let WinesArray = [];
   for (const key in history) {
-
     for (const key1 in history[key].WinesList) {
       WinesArray.push(history[key].WinesList[key1]);
     }
@@ -211,6 +225,20 @@ router.post("/getHistory", async (req, res) => {
   res.send({
     history: history,
     wines: wines,
+  });
+});
+
+router.post("/createQuestion", async (req, res) => {
+  blogQuestion = new BlogQuestion({
+    Question: req.body.question.trim(),
+    QuestionDate: new Date(),
+    UserId: req.body.id,
+    UserName: req.body.Name,
+    UserEmail: req.body.email,
+  });
+  await blogQuestion.save();
+  res.send({
+    status: true,
   });
 });
 

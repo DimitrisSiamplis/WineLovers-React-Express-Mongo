@@ -8,7 +8,9 @@ import Navigation from "./Components/Navigation";
 import Wines from "./pages/Wines";
 import Home from "./pages/Home";
 import Card from "./pages/Card";
+import Blog from "./pages/Blog";
 import History from "./pages/History";
+import BlogInfo from "./pages/BlogInfo";
 import { Button, Container, Row, Col, Form, Alert } from "react-bootstrap";
 import Profile from "./pages/Profile";
 import WineProfile from "./pages/WineProfile";
@@ -83,6 +85,14 @@ function App() {
 
             <Route exact path="/history">
               <History />
+            </Route>
+
+            <Route exact path="/blog">
+              <Blog />
+            </Route>
+
+            <Route exact path="/blogInfo/:id">
+              <BlogInfo />
             </Route>
 
             <Route exact path="/profile">

@@ -1,0 +1,29 @@
+.rounded-circle.me-3{
+    height: 6%;
+    width: 6%;
+}
+
+
+.popoverButton{
+    background-color: white;
+    color: darkblue;
+    text-decoration: underline;
+    border: none;
+    padding: 0;
+}
+
+.mb-2.css{
+    background-color: rgb(244, 234, 222);
+}
+
+.eyeFaIcon{
+   margin-left: 2%;
+   color: rgb(28, 28, 242);
+    font-size: 18px;
+    text-align: center;
+}
+
+.eyeFaIcon:hover{
+    cursor: pointer;
+    font-size: 22px;
+}

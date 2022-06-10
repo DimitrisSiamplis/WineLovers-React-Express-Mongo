@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { dateFormater , addDays} from "./Functions/functions";
 import {
   Button,
   Container,
@@ -58,27 +59,7 @@ const History = () => {
     getHistory();
   }, []);
 
-  const dateFormater = (date) => {
-    var dateStr =
-      ("00" + (date.getMonth() + 1)).slice(-2) +
-      "/" +
-      ("00" + date.getDate()).slice(-2) +
-      "/" +
-      date.getFullYear() +
-      "-" +
-      ("00" + date.getHours()).slice(-2) +
-      ":" +
-      ("00" + date.getMinutes()).slice(-2) +
-      ":" +
-      ("00" + date.getSeconds()).slice(-2);
-    return dateStr;
-  };
-
-  function addDays(date, days) {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  }
+  
 
   return (
     <div>
