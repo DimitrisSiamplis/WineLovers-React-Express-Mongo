@@ -31,9 +31,34 @@ export function getAge(dateString) {
   return age;
 }
 
-// export function GET(url) {
-//   fetch(url)
-//   .then(response => {
-//       return response.json()
-//   })
-// }
+export function differenceInDays(date) {
+  var date1 = new Date(date);
+  var date2 = new Date();
+  var Difference_In_Time = date2.getTime() - date1.getTime();
+  var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+  return Math.round(Difference_In_Days);
+}
+
+export function validateEmail(email) {
+  var re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
+
+export function diffInHoursFunc(date) {
+  var diff = new Date().valueOf() - new Date(date).valueOf();
+  var diffInHours = diff / 1000 / 60 / 60;
+  return Math.round(diffInHours);
+}
+
+export function diffInMinutesFunc(date) {
+  var diff = new Date().valueOf() - new Date(date).valueOf();
+  var diffInHours = diff / 1000 / 60 ;
+  return Math.round(diffInHours);
+}
+
+export function diffInSecFunc(date) {
+  var diff = new Date().valueOf() - new Date(date).valueOf();
+  var diffInHours = diff / 1000  ;
+  return Math.round(diffInHours);
+}

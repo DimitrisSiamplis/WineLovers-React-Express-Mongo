@@ -1,6 +1,5 @@
 import React from "react";
-import BootstrapTable from "react-bootstrap-table-next";
-import Multiselect from "multiselect-react-dropdown";
+
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import {
@@ -15,7 +14,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import { GET } from "./Functions/functions";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 import "./Wines.css";
 
 const Wines = () => {
@@ -34,7 +33,8 @@ const Wines = () => {
   // --------- Set COOKIES
   const cookies = new Cookies();
   var user = cookies.get("email");
-  console.log(cookies.get("card"));
+
+  const { innerWidth: width, innerHeight: height } = window;
 
   //------ initial Wines --------------
   const getWines = () => {
@@ -45,7 +45,9 @@ const Wines = () => {
     fetch("http://localhost:4000/getWines")
       .then((res) => res.json())
       .then((json) => {
-        setWines(json);
+        console.log([json]);
+
+        setWines([json]);
       });
   };
 
@@ -155,19 +157,31 @@ const Wines = () => {
                 <Form>
                   <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Filter Wine</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
-                    <Form.Text className="text-muted">
-                      We'll never share your email with anyone else.
-                    </Form.Text>
+                    <Form.Control type="text" placeholder="Filter Wine" />
                   </Form.Group>
-                  <Button variant="primary">Search</Button>
 
-                  <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" />
-                  </Form.Group>
+                  <Form.Label>Wine Type</Form.Label>
+                  <Form.Select aria-label="Default select example">
+                    <option value="1">Ξηρο</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </Form.Select>
+
+                  <Form.Label>Wine Color</Form.Label>
+                  <Form.Select aria-label="Default select example">
+                    <option value="1">Red</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </Form.Select>
+
+                  <br/>
+                  <Form.Label>Min Price Range</Form.Label>
+                  <Form.Range />
+                  <Form.Label>Max Price Range</Form.Label>
+                  <Form.Range />
+
                   <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Check me out" />
+                    <Form.Check type="checkbox" label="Search by top rates" />
                   </Form.Group>
                 </Form>
               </Row>
@@ -178,22 +192,25 @@ const Wines = () => {
           <Container>
             {wines.length !== 0 && (
               <Row>
-                <Col xs={2}></Col>
-                <Col xs={10}></Col>
-                {wines.map((item) => (
-                  <Col xs={4}>
+                {/* <Col xs={2}></Col>
+                <Col xs={10}></Col> */}
+                {wines[0].wines.map((item) => (
+                  <Col xs={width < 1000 ? (width < 700 ? 12 : 6) : 4}>
                     {wines.length !== 0 && (
                       <Container className="item">
                         <div className="card card-body">
                           <div className="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
                             <div className="mr-2 mb-3 mb-lg-0">
-                              <img className="image" src={item.ImageUrl} />
+                              <img className="image" src={item.wine.ImageUrl} />
                             </div>
                             <div className="media-body">
                               <h6 className="media-title font-weight-semibold">
-                                <a href={`/wine/${item._id}`} data-abc="true">
+                                <a
+                                  href={`/wine/${item.wine._id}`}
+                                  data-abc="true"
+                                >
                                   {" "}
-                                  {item.WineName}
+                                  {item.wine.WineName}
                                 </a>
                               </h6>
                               <ul className="list-inline list-inline-dotted mb-3 mb-lg-2">
@@ -203,7 +220,7 @@ const Wines = () => {
                                     className="text-muted"
                                     data-abc="true"
                                   >
-                                    {item.Type}
+                                    {item.wine.Type}
                                   </a>
                                 </li>
                                 <li className="list-inline-item">
@@ -212,7 +229,7 @@ const Wines = () => {
                                     className="text-muted"
                                     data-abc="true"
                                   >
-                                    {item.Color}
+                                    {item.wine.Color}
                                   </a>
                                 </li>
                                 <li className="list-inline-item">
@@ -221,7 +238,7 @@ const Wines = () => {
                                     className="text-muted"
                                     data-abc="true"
                                   >
-                                    {item.Year}
+                                    {item.wine.Year}
                                   </a>
                                 </li>
                                 <br />
@@ -231,34 +248,48 @@ const Wines = () => {
                                     className="text-muted"
                                     data-abc="true"
                                   >
-                                    {item.Location} , {item.Country}
+                                    {item.wine.Location} , {item.wine.Country}
                                   </a>
                                 </li>
                               </ul>
-                              <p className="mb-3">{item.WineDescription}</p>
+                              <p className="mb-3">
+                                {item.wine.WineDescription}
+                              </p>
                               <ul className="list-inline list-inline-dotted mb-0">
                                 <li className="list-inline-item">
                                   {" "}
                                   <strong>Winery by</strong>{" "}
                                   <a href="#" data-abc="true">
                                     {" "}
-                                    {item.Winery}{" "}
+                                    {item.wine.Winery}{" "}
                                   </a>
                                 </li>
                                 <br />
                                 <li className="list-inline-item">
                                   {" "}
-                                  <strong>Grape : </strong> {item.Grapes}{" "}
+                                  <strong>Grape : </strong> {item.wine.Grapes}{" "}
                                 </li>
                               </ul>
                             </div>
                             <div className="mt-3 mt-lg-0 ml-lg-3 text-center">
                               <h3 className="mb-0 font-weight-semibold"> €</h3>
+                              <h6 className="mb-0 font-weight-semibold">
+                                {" "}
+                                {item.sum_total_rate}{" "}
+                                <FontAwesomeIcon
+                                  className="starIcon"
+                                  icon={faStar}
+                                  size="1x"
+                                />
+                              </h6>
                               <div className="text-muted">
                                 {" "}
                                 <span className="fa fa-star checked"></span>{" "}
                               </div>
-                              <div className="text-muted"> 0 reviews </div>
+                              <div className="text-muted">
+                                {" "}
+                                {item.number_of_rate} reviews{" "}
+                              </div>
                               <div className="text-muted"> </div>
 
                               <Button

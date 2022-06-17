@@ -13,7 +13,7 @@ const Card = () => {
   const [phoneNum , setPhoneNum] = useState("")
   const [zipCode , setZipCode] = useState("")
   const [userDetails, setUseretails] = useState([]);
-  const [bankCard , setBankCard] = useState([])
+ 
 
   const cookies = new Cookies();
   var userEmail = cookies.get("email");

@@ -136,7 +136,36 @@ router.post("/register", async (req, res) => {
 
 router.get("/getWines", async (req, res) => {
   let wine = await Wine.find();
-  res.send(wine);
+  let comment = await Comment.find().sort({
+    CommentDate: -1,
+  });
+
+  var wines = [];
+  for (const key in wine) {
+    var total_rating = 0;
+    var number_of_rate = 0;
+    for (const key1 in comment) {
+      if (wine[key]._id == comment[key1].WineId) {
+        total_rating = total_rating + Number(comment[key1].Rating);
+        number_of_rate = number_of_rate + 1;
+      }
+    }
+
+    var sum_total_rate = 0;
+    if (number_of_rate != 0) {
+      sum_total_rate = total_rating / number_of_rate;
+    }
+
+    wines.push({
+      wine: wine[key],
+      sum_total_rate: sum_total_rate,
+      number_of_rate: number_of_rate,
+    });
+
+   
+  }
+
+  res.send({ wines: wines });
 });
 
 router.get("/getBlogs", async (req, res) => {
@@ -155,19 +184,49 @@ router.get("/getUser/:email", async (req, res) => {
 router.get("/getWine/:wineId", async (req, res) => {
   var wineId = req.params.wineId;
   let wine = await Wine.findOne({ _id: wineId });
+  let comment = await Comment.find({ WineId: wineId }).sort({
+    CommentDate: -1,
+  });
+
+  var userIds = [];
+  var total_rating = 0;
+  for (const key in comment) {
+    userIds.push(comment[key].UserId);
+    total_rating = total_rating + comment[key].Rating;
+  }
+
+  total_rating = total_rating / comment.length;
+
+  let users = await User.find({ _id: userIds });
+
+  var Comments = [];
+  for (const key in comment) {
+    for (const key1 in users) {
+      if (comment[key].UserId == users[key1]._id) {
+        Comments.push({
+          comment: comment[key],
+          user: users[key1],
+        });
+      }
+    }
+  }
+
   res.send({
     wine: wine,
+    Comments: Comments,
+    total_rating: total_rating,
   });
 });
 
 router.get("/getApliesToQuestion/:questionId", async (req, res) => {
   var questionId = req.params.questionId;
   console.log(questionId);
-  
-  let aplyQuestion = await AplyQuestion.find({QuestionId :questionId });
-  
+
+  let aplyQuestion = await AplyQuestion.find({ QuestionId: questionId });
+  let blogQuestions = await BlogQuestion.find({ _id: questionId });
   res.send({
-    aplyQuestion
+    aplyQuestion,
+    blogQuestions,
   });
 });
 
@@ -237,6 +296,75 @@ router.post("/createQuestion", async (req, res) => {
     UserEmail: req.body.email,
   });
   await blogQuestion.save();
+  res.send({
+    status: true,
+  });
+});
+
+router.post("/applyToQuestion", async (req, res) => {
+  aplyQuestion = new AplyQuestion({
+    QuestionId: req.body.blogQuestionId,
+    Aply: req.body.apply,
+    AplyDate: new Date(),
+    AplierId: req.body.userId,
+    AplierName: req.body.userName,
+    AplierEmail: req.body.userEmail,
+  });
+  await aplyQuestion.save();
+  console.log(aplyQuestion);
+
+  res.send({
+    status: true,
+  });
+});
+
+router.post("/changePassword", async (req, res) => {
+  console.log(req.body);
+  let user = await User.findOne({ Email: req.body.userEmail });
+  console.log(user);
+  if (user) {
+    await User.updateOne(
+      { Email: req.body.userEmail },
+      { $set: { Password: req.body.newConfirmPassword } }
+    );
+    res.send({
+      status: true,
+    });
+  } else {
+    res.send({
+      status: false,
+    });
+  }
+});
+
+router.post("/editProfile", async (req, res) => {
+  console.log(req.body);
+  let user = await User.findOne({ Email: req.body.email });
+
+  if (user) {
+    res.send({
+      status: true,
+    });
+  } else {
+    res.send({
+      status: false,
+    });
+  }
+});
+
+router.post("/newWineComment", async (req, res) => {
+  console.log(req.body);
+  let user = await User.findOne({ Email: req.body.userEmail });
+
+  comment = new Comment({
+    WineId: req.body.id,
+    UserId: user._id,
+    Comment: req.body.newComment,
+    Rating: req.body.newRate,
+    CommentDate: new Date(),
+  });
+
+  await comment.save();
   res.send({
     status: true,
   });

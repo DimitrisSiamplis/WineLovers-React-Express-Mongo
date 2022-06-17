@@ -17,7 +17,7 @@ const Register = () => {
   const [sex, setSex] = useState("");
   const [isOkForRegister, setIsOkForRegister] = useState(true);
 
-  const [isLogin, setIslogin] = useState(false);
+  // const [isLogin, setIslogin] = useState(false);
 
   useEffect(() => {
     if (
@@ -90,11 +90,12 @@ const Register = () => {
       .then((res) => res.json())
       .then((json) => {
         if (json.alreadyExist) {
-          setIslogin(false);
+          // setIslogin(false);
           alert("this Email already exists");
-        } else {
-          setIslogin(true);
-        }
+         } 
+         //else {
+        //   setIslogin(true);
+        // }
       });
   };
 

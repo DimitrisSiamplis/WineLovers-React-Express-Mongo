@@ -12,3 +12,33 @@
     margin-left: 18%;
     width: 60%;
 }
+
+.noSelected{
+    color: gray;
+}
+
+.Selected{
+    color: gold;
+}
+
+
+.wineProfileImage{
+    width: 25%;
+    height: 100%;
+    transform: scale(1.5);
+}
+
+.wineProfileImage:hover{
+    transform: scale(1.7);
+    /* opacity: 0.8; */
+    cursor: pointer;
+}
+.rowComment{
+    margin-top: 3%;
+}
+
+
+.wineTitle{
+    margin-bottom: 2%;
+    
+}

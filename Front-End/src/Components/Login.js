@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Container, Row, Col, Form } from "react-bootstrap";
 import { useState } from "react";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import "./Login.css";
 import Cookies from "universal-cookie";
 

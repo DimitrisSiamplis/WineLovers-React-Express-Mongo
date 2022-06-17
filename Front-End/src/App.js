@@ -11,7 +11,9 @@ import Card from "./pages/Card";
 import Blog from "./pages/Blog";
 import History from "./pages/History";
 import BlogInfo from "./pages/BlogInfo";
-import { Button, Container, Row, Col, Form, Alert } from "react-bootstrap";
+import ChangePassword from "./pages/ChangePassword";
+import EditProfile from "./pages/EditProfile";
+import {  Container, Row, Col, Alert } from "react-bootstrap";
 import Profile from "./pages/Profile";
 import WineProfile from "./pages/WineProfile";
 import { useState, useEffect } from "react";
@@ -94,9 +96,14 @@ function App() {
             <Route exact path="/blogInfo/:id">
               <BlogInfo />
             </Route>
-
+            <Route exact path="/changePassword">
+              <ChangePassword />
+            </Route>
             <Route exact path="/profile">
               <Profile />
+            </Route>
+            <Route exact path="/editProfile">
+              <EditProfile/>
             </Route>
           </Switch>
         </div>

@@ -5,21 +5,12 @@ import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { dateFormater , addDays} from "./Functions/functions";
-import {
-  Button,
-  Container,
-  Row,
-  Col,
-  Form,
-  Modal,
-  Alert,
-  Table,
-} from "react-bootstrap";
+import { dateFormater, addDays } from "./Functions/functions";
+import { Table } from "react-bootstrap";
 
 const History = () => {
   const [history, setHistory] = useState([]);
-  const [wines, setWines] = useState([]);
+  // const [wines, setWines] = useState([]);
 
   const cookies = new Cookies();
   var userEmail = cookies.get("email");
@@ -59,11 +50,9 @@ const History = () => {
     getHistory();
   }, []);
 
-  
-
   return (
     <div>
-        <h3 className="HistoryOrderTable">History Order Table</h3>
+      <h3 className="HistoryOrderTable">History Order Table</h3>
       <Table striped bordered hover className="tableHistory">
         <thead>
           <tr>
@@ -105,7 +94,15 @@ const History = () => {
                 <td>
                   <strong>{dateFormater(new Date(item.history.Date))}</strong>
                 </td>
-                <td>{dateFormater(new Date( new Date(item.history.Date).setDate(new Date(item.history.Date).getDate() +3)))}</td>
+                <td>
+                  {dateFormater(
+                    new Date(
+                      new Date(item.history.Date).setDate(
+                        new Date(item.history.Date).getDate() + 3
+                      )
+                    )
+                  )}
+                </td>
                 <td>Otto</td>
                 <td>@mdo</td>
               </tr>

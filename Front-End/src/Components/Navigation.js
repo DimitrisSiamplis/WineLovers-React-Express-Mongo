@@ -6,20 +6,10 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { faBlog } from "@fortawesome/free-solid-svg-icons";
-import {
-  Button,
-  Container,
-  Row,
-  Col,
-  Form,
-  Nav,
-  Navbar,
-  NavDropdown,
-} from "react-bootstrap";
+import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
 const Navigation = (props) => {
   const onTriger = () => {
-    
     props.handleCallback();
   };
 
@@ -84,8 +74,11 @@ const Navigation = (props) => {
               </Nav.Link>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <NavDropdown title="Settings" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">
+                <NavDropdown.Item href="/changePassword">
                   Change Password
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/editProfile">
+                  Edit Profile
                 </NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">Add Wine</NavDropdown.Item>
 
@@ -93,7 +86,6 @@ const Navigation = (props) => {
                 <NavDropdown.Item
                   onClick={() => {
                     onTriger();
-                    
                   }}
                 >
                   Logout

@@ -1,16 +1,6 @@
 import React from "react";
 import "./Blog.css";
-import {
-  Button,
-  Container,
-  Row,
-  Col,
-  Form,
-  Alert,
-  OverlayTrigger,
-  Popover,
-  Card,
-} from "react-bootstrap";
+import { Button, OverlayTrigger, Popover } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import { dateFormater, getAge } from "./Functions/functions";
@@ -186,11 +176,11 @@ const Blog = () => {
                               </Button>
                             </OverlayTrigger>
                             <FontAwesomeIcon
-                             className="eyeFaIcon"
-                             title={`Reply to ${blog.UserName}`}
-                             onClick = {()=>{
-                               window.open(`/blogInfo/${blog._id}`)
-                             }}
+                              className="eyeFaIcon"
+                              title={`Reply to ${blog.UserName}`}
+                              onClick={() => {
+                                window.open(`/blogInfo/${blog._id}`);
+                              }}
                               icon={faReply}
                               size="lg"
                             />{" "}

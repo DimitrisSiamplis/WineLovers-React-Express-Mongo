@@ -446,6 +446,7 @@ exports.aplyToQuestion = async (req, res) => {
     AplierName: user.Name,
     AplierEmail: user.Email,
   });
+  
   await aplyQuestion.save();
   console.log(aplyQuestion);
 
@@ -591,11 +592,8 @@ exports.filterQuestions = async (req, res) => {
   }
 };
 
-
 exports.fineOneUser = async (req, res) => {
-  
-  let user = await User.find()
-  .then( (users) => {
-    res.send(users)
+  let user = await User.find().then((users) => {
+    res.send(users);
   });
 };
