@@ -59,3 +59,24 @@
     width: 30%;
    
 }
+
+.rateCheckBox{
+    display: flex;
+}
+
+
+.rateLabel{
+    margin-top: 2.5%;
+}
+/* 
+.wineContainer{
+    background-color: red;
+} */
+
+
+
+.card.card-body.wine:hover{
+    transform: scale(1.04);
+    box-shadow: 5px 10px rgb(250, 235, 235);
+    cursor: pointer;
+}

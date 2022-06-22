@@ -7,11 +7,30 @@ import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { faBlog } from "@fortawesome/free-solid-svg-icons";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import Cookies from "universal-cookie";
+import { useEffect, useState } from "react";
 
 const Navigation = (props) => {
+  const [userDetails, setUseretails] = useState([]);
+
+  const cookies = new Cookies();
+  var userEmail = cookies.get("email");
+
   const onTriger = () => {
     props.handleCallback();
   };
+
+  const getUser = () => {
+    fetch(`http://localhost:4000/getUser/${userEmail}`)
+      .then((res) => res.json())
+      .then((json) => {
+        console.log([json])
+        setUseretails([json]);
+      });
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <div>
@@ -91,6 +110,24 @@ const Navigation = (props) => {
                   Logout
                 </NavDropdown.Item>
               </NavDropdown>
+            </Nav>
+            <Nav>
+              
+                <Nav.Link className="loginUs">
+                 
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  
+                </Nav.Link>
+             
+            </Nav>
+            <Nav>
+              {userDetails.length !== 0 && (
+                <Nav.Link className="loginUs">
+                 
+                  {userDetails[0].user.Name} 
+                  
+                </Nav.Link>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

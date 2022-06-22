@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import {
@@ -10,6 +10,7 @@ import {
   Form,
   Modal,
   Alert,
+  PageItem,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
@@ -18,11 +19,33 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import "./Wines.css";
 
 const Wines = () => {
+  let history = useHistory();
+
+  const [initialWines, setInitialWines] = useState([]);
   const [wines, setWines] = useState([]);
   const [selectedWineId, setSelectedWineId] = useState("");
   const [showFilter, setShowFilter] = useState(true);
   const [alreadyExistInCard, setAlreadyExistInCard] = useState(false);
   const [succesfullyAddedToCard, setSuccesfullyAddedToCard] = useState(false);
+
+  const [colorWines, setColorWines] = useState([]);
+  const [typeWines, setTypeWines] = useState([]);
+  const [yearWines, setYearWines] = useState([]);
+
+  // ------------FIlter Hooks -----------------------------
+  const [wineSearch, setWineSearch] = useState("");
+  const [wineType, setWineType] = useState("");
+  const [wineColor, setWineColor] = useState("");
+  const [wineYear, setWineYear] = useState("");
+  const [minRate, setMinRate] = useState(0);
+  const [maxRate, setMaxRate] = useState(5);
+  const [maxInitialPrice, setMaxInitialPrice] = useState();
+  const [minInitialPrice, setMinInitialPrice] = useState();
+  const [maxPrice, setMaxPrice] = useState();
+  const [minPrice, setMinPrice] = useState();
+
+  const [searchByMaxPrice, setByMaxPrice] = useState(false);
+  const [searchByMaxRate, setByMaxRate] = useState(false);
 
   // -------- MODAL
   const [show, setShow] = useState(false);
@@ -38,22 +61,90 @@ const Wines = () => {
 
   //------ initial Wines --------------
   const getWines = () => {
-    // GET("http://localhost:4000/getWines").then(response =>
-    //   console.log(response)
-    // );
-
     fetch("http://localhost:4000/getWines")
       .then((res) => res.json())
       .then((json) => {
-        console.log([json]);
+        console.log(json.wines);
 
         setWines([json]);
+        setInitialWines([json]);
+
+        var colors = [];
+        var types = [];
+        var years = [];
+        var prices = [];
+        for (const key in json.wines) {
+          colors.push(json.wines[key].wine.Color);
+          types.push(json.wines[key].wine.Type);
+          years.push(json.wines[key].wine.Year);
+          prices.push(json.wines[key].wine.Price);
+        }
+        setMaxInitialPrice(Math.max.apply(Math, prices));
+        setMinInitialPrice(Math.min.apply(Math, prices));
+        setMinPrice(Math.min.apply(Math, prices));
+        setMaxPrice(Math.max.apply(Math, prices));
+        colors = [...new Set(colors)];
+        types = [...new Set(types)];
+        years = [...new Set(years)];
+        setColorWines(colors);
+        setTypeWines(types);
+        setYearWines(years);
       });
   };
 
   useEffect(() => {
     getWines();
   }, []);
+
+  const filterWines = () => {
+    var oldWines = initialWines;
+
+    var newWineArray = [];
+    var newArray = oldWines[0].wines.filter(function (el) {
+      return (
+        el.wine.WineName.includes(wineSearch) &&
+        el.wine.Color.includes(wineColor) &&
+        el.wine.Type.includes(wineType) &&
+        String(el.wine.Year).includes(wineYear) &&
+        el.sum_total_rate < maxRate &&
+        el.sum_total_rate >= minRate &&
+        el.wine.Price <= maxPrice &&
+        el.wine.Price >= minPrice
+      );
+    });
+
+    if (searchByMaxPrice) {
+      newArray.sort((a, b) => {
+        return b.wine.Price - a.wine.Price;
+      });
+    }
+
+    if (searchByMaxRate) {
+      newArray.sort((a, b) => {
+        return b.sum_total_rate - a.sum_total_rate;
+      });
+    }
+    console.log(newArray);
+
+    newWineArray.push({ wines: newArray });
+    setWines(newWineArray);
+    window.scrollTo(0, 0);
+  };
+
+  const onClearHandler = () => {
+    setWineSearch("");
+    setWineType("");
+    setWineColor("");
+    setWineYear("");
+    setMinRate(0);
+    setMaxRate(5);
+    setMaxPrice(maxInitialPrice);
+    setMinPrice(minInitialPrice);
+    setByMaxPrice(false);
+    setByMaxRate(false);
+    setWines(initialWines);
+    window.scrollTo(0, 0);
+  };
 
   // --------- Add To Card ----------------
 
@@ -157,32 +248,180 @@ const Wines = () => {
                 <Form>
                   <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Filter Wine</Form.Label>
-                    <Form.Control type="text" placeholder="Filter Wine" />
+                    <Form.Control
+                      type="text"
+                      placeholder="Filter Wine"
+                      value={wineSearch}
+                      onChange={(e) => {
+                        setWineSearch(e.target.value);
+                      }}
+                    />
                   </Form.Group>
-
                   <Form.Label>Wine Type</Form.Label>
-                  <Form.Select aria-label="Default select example">
-                    <option value="1">Ξηρο</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                  <Form.Select
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      console.log(e.target.value);
+                      setWineType(e.target.value);
+                    }}
+                  >
+                    <option value="">Ξηρο..</option>
+                    {typeWines.map((type) => (
+                      <option value={type}>{type}</option>
+                    ))}
                   </Form.Select>
-
                   <Form.Label>Wine Color</Form.Label>
-                  <Form.Select aria-label="Default select example">
-                    <option value="1">Red</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                  <Form.Select
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      setWineColor(e.target.value);
+                    }}
+                  >
+                    <option value="">Red/White/Roze..</option>
+                    {colorWines.map((color) => (
+                      <option value={color}>{color}</option>
+                    ))}
                   </Form.Select>
+                  <Form.Label>Wine Year</Form.Label>
+                  <Form.Select
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      setWineYear(e.target.value);
+                    }}
+                  >
+                    <option value="">2000/2010/2020..</option>
+                    {yearWines.map((year) => (
+                      <option value={year}>{year}</option>
+                    ))}
+                  </Form.Select>
+                  <br />
+                  <Row>
+                    <Col xs={6}>
+                      <Form.Label>Min Rate Range</Form.Label>
+                      <Form.Range
+                        min="0"
+                        max="5"
+                        value={minRate}
+                        onChange={(e) => {
+                          if (maxRate > e.target.value) {
+                            setMinRate(e.target.value);
+                          }
+                        }}
+                      />
+                      <strong>
+                        {minRate}
+                        <FontAwesomeIcon
+                          className="starIcon"
+                          icon={faStar}
+                          size="1x"
+                        />
+                      </strong>
+                    </Col>
 
-                  <br/>
-                  <Form.Label>Min Price Range</Form.Label>
-                  <Form.Range />
-                  <Form.Label>Max Price Range</Form.Label>
-                  <Form.Range />
-
-                  <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Search by top rates" />
-                  </Form.Group>
+                    <Col xs={6}>
+                      {" "}
+                      <Form.Label>Max Rate Range</Form.Label>
+                      <Form.Range
+                        min="0"
+                        max="5"
+                        value={maxRate}
+                        onChange={(e) => {
+                          if (minRate < e.target.value) {
+                            setMaxRate(e.target.value);
+                          }
+                        }}
+                      />
+                      <strong>
+                        {maxRate}
+                        <FontAwesomeIcon
+                          className="starIcon"
+                          icon={faStar}
+                          size="1x"
+                        />
+                      </strong>
+                    </Col>
+                  </Row>
+                  <br />
+                  <Row>
+                    <Col xs={6}>
+                      <Form.Label>Min Price Price</Form.Label>
+                      <Form.Range
+                        min={minInitialPrice}
+                        max={maxInitialPrice}
+                        value={
+                          minPrice === minInitialPrice
+                            ? minInitialPrice
+                            : minPrice
+                        }
+                        onChange={(e) => {
+                          if (maxPrice > e.target.value) {
+                            setMinPrice(e.target.value);
+                          }
+                        }}
+                      />
+                      <strong>{minPrice} €</strong>
+                    </Col>
+                    <Col xs={6}>
+                      {" "}
+                      <Form.Label>Max Price Price</Form.Label>
+                      <Form.Range
+                        min={minInitialPrice}
+                        max={maxInitialPrice}
+                        value={
+                          maxPrice === maxInitialPrice
+                            ? maxInitialPrice
+                            : maxPrice
+                        }
+                        onChange={(e) => {
+                          if (minPrice < e.target.value) {
+                            setMaxPrice(e.target.value);
+                          }
+                        }}
+                      />
+                      <strong>{maxPrice} €</strong>
+                    </Col>
+                  </Row>
+                  <br />
+                  <hr />
+                  <div className="rateCheckBox">
+                    <input
+                      type="checkbox"
+                      checked={searchByMaxPrice}
+                      onChange={(e) => {
+                        setByMaxPrice(e.target.checked);
+                      }}
+                    />
+                    <label className="rateLabel">
+                      &nbsp;Search&nbsp;by&nbsp;max&nbsp;price.
+                    </label>
+                  </div>
+                  <div className="rateCheckBox">
+                    <input
+                      type="checkbox"
+                      checked={searchByMaxRate}
+                      onChange={(e) => {
+                        setByMaxRate(e.target.checked);
+                      }}
+                    />
+                    <label className="rateLabel">
+                      &nbsp;Search&nbsp;by&nbsp;max&nbsp;rate.
+                    </label>
+                  </div>
+                  <br />
+                  <br />
+                  <Row>
+                    <Col xs={4}>
+                      <Button variant="warning" onClick={onClearHandler}>
+                        Clear
+                      </Button>
+                    </Col>
+                    <Col xs={6}>
+                      <Button variant="success" onClick={filterWines}>
+                        Search
+                      </Button>
+                    </Col>
+                  </Row>
+                  &nbsp;
                 </Form>
               </Row>
             </Container>
@@ -198,7 +437,13 @@ const Wines = () => {
                   <Col xs={width < 1000 ? (width < 700 ? 12 : 6) : 4}>
                     {wines.length !== 0 && (
                       <Container className="item">
-                        <div className="card card-body">
+                        <div
+                          className="card card-body wine"
+                          onClick={() => {
+                            console.log(item.wine._id);
+                            history.push("/wine/" + item.wine._id);
+                          }}
+                        >
                           <div className="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
                             <div className="mr-2 mb-3 mb-lg-0">
                               <img className="image" src={item.wine.ImageUrl} />
@@ -252,10 +497,15 @@ const Wines = () => {
                                   </a>
                                 </li>
                               </ul>
-                              <p className="mb-3">
+                              {/* <p className="mb-3">
                                 {item.wine.WineDescription}
-                              </p>
+                              </p> */}
                               <ul className="list-inline list-inline-dotted mb-0">
+                                <li className="list-inline-item">
+                                  {" "}
+                                  <strong>Grape : </strong> {item.wine.Grapes}{" "}
+                                </li>
+                                <br />
                                 <li className="list-inline-item">
                                   {" "}
                                   <strong>Winery by</strong>{" "}
@@ -265,17 +515,16 @@ const Wines = () => {
                                   </a>
                                 </li>
                                 <br />
-                                <li className="list-inline-item">
-                                  {" "}
-                                  <strong>Grape : </strong> {item.wine.Grapes}{" "}
-                                </li>
                               </ul>
                             </div>
                             <div className="mt-3 mt-lg-0 ml-lg-3 text-center">
-                              <h3 className="mb-0 font-weight-semibold"> €</h3>
+                              <h3 className="mb-0 font-weight-semibold">
+                                {item.wine.Price} €
+                              </h3>
                               <h6 className="mb-0 font-weight-semibold">
                                 {" "}
-                                {item.sum_total_rate}{" "}
+                                {Math.round(item.sum_total_rate * 100) /
+                                  100}{" "}
                                 <FontAwesomeIcon
                                   className="starIcon"
                                   icon={faStar}
@@ -328,6 +577,18 @@ const Wines = () => {
           </Container>
         </div>
       </div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 };

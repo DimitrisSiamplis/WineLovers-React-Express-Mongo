@@ -27,3 +27,19 @@
     cursor: pointer;
     font-size: 22px;
 }
+
+
+.blogAndFilter{
+    display: flex;
+   
+}
+
+.applieToQuestionFilters{
+    width: 20%;
+    margin-top: 10%;
+    margin-left: 2%;
+}
+
+.container.py-4{
+    margin-right: 10%;
+}

@@ -161,8 +161,6 @@ router.get("/getWines", async (req, res) => {
       sum_total_rate: sum_total_rate,
       number_of_rate: number_of_rate,
     });
-
-   
   }
 
   res.send({ wines: wines });
@@ -170,7 +168,20 @@ router.get("/getWines", async (req, res) => {
 
 router.get("/getBlogs", async (req, res) => {
   let blogQuestion = await BlogQuestion.find();
-  res.send(blogQuestion);
+
+  let numberOfApplies = [];
+  for (const key in blogQuestion) {
+    var aplyQuestion = await AplyQuestion.find({
+      QuestionId: blogQuestion[key]._id,
+    });
+    
+    numberOfApplies.push({
+      numberOfApplies: aplyQuestion.length,
+      blogs: blogQuestion[key],
+    });
+  }
+
+  res.send({ numberOfApplies });
 });
 
 router.get("/getUser/:email", async (req, res) => {

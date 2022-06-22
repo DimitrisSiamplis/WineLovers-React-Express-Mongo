@@ -6,13 +6,29 @@ import Cookies from "universal-cookie";
 import { dateFormater, getAge } from "./Functions/functions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Modal,
+  Alert,
+  PageItem,
+} from "react-bootstrap";
 
 const Blog = () => {
+  const [initialBlogs, setInitialBlogs] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState([]);
   const [question, setQuestion] = useState("");
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState("");
+
+  // --------------- Filter Hooks ------------------
+  const [blogSearch, setBlogSearch] = useState("");
+  const [topReviewSearch, setTopReviewSearch] = useState(false);
+  const [myQuestion, setMyQuestion] = useState(false);
+
   const cookies = new Cookies();
   var userEmail = cookies.get("email");
 
@@ -21,8 +37,9 @@ const Blog = () => {
     fetch(`http://localhost:4000/getBlogs`)
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
-        setBlogs(json);
+        console.log([json]);
+        setBlogs([json]);
+        setInitialBlogs([json]);
       });
   };
 
@@ -84,8 +101,101 @@ const Blog = () => {
       });
   };
 
+  const filterQuestion = () => {
+    var oldBlogs = initialBlogs;
+    var newBlogArray = [];
+    var newArray = oldBlogs[0].numberOfApplies.filter(function (el) {
+      return el.blogs.Question.includes(blogSearch);
+    });
+
+    if (myQuestion) {
+      newArray = newArray.filter(function (el) {
+        return el.blogs.UserEmail.includes(userEmail);
+      });
+    }
+
+    if (topReviewSearch) {
+      newArray.sort((a, b) => {
+        return b.numberOfApplies - a.numberOfApplies;
+      });
+    }
+    console.log(newArray);
+
+    newBlogArray.push({ numberOfApplies: newArray });
+    setBlogs(newBlogArray);
+    window.scrollTo(0, 0);
+  };
+
+  const onClearHandler = () => {
+    setMyQuestion(false);
+    setTopReviewSearch(false);
+    setBlogSearch("");
+    setBlogs(initialBlogs);
+    window.scrollTo(0, 0);
+  };
+
   return (
-    <div>
+    <div className="blogAndFilter">
+      <div className="applieToQuestionFilters">
+        <h4>Search&nbsp;for&nbsp;comments</h4>
+
+        <Container>
+          <Row>
+            <Form>
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Filter Blogs</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Filter Blog"
+                  value={blogSearch}
+                  onChange={(e) => {
+                    setBlogSearch(e.target.value);
+                  }}
+                />
+              </Form.Group>
+              <br />
+              <div className="rateCheckBox">
+                <input
+                  type="checkbox"
+                  checked={topReviewSearch}
+                  onChange={(e) => {
+                    setTopReviewSearch(e.target.checked);
+                  }}
+                />
+                <label className="rateLabel">
+                  &nbsp;Search&nbsp;by&nbsp;top&nbsp;question.
+                </label>
+              </div>
+              <div className="rateCheckBox">
+                <input
+                  type="checkbox"
+                  checked={myQuestion}
+                  onChange={(e) => {
+                    setMyQuestion(e.target.checked);
+                  }}
+                />
+                <label className="rateLabel">&nbsp;My&nbsp;questions.</label>
+              </div>
+              <br />
+              
+              <hr />
+              <Row>
+                <Col xs={4}>
+                  <Button variant="warning" onClick={onClearHandler}>
+                    Clear
+                  </Button>
+                </Col>
+                <Col xs={6}>
+                  <Button variant="success" onClick={filterQuestion}>
+                    Search
+                  </Button>
+                </Col>
+              </Row>
+              &nbsp;
+            </Form>
+          </Row>
+        </Container>
+      </div>
       <div className="container py-4">
         <div className="col-md-10 col-lg-8 m-auto">
           <div className="bg-white rounded-3 shadow-sm p-4">
@@ -148,15 +258,15 @@ const Blog = () => {
               <div className="py-3">
                 {blogs.length !== 0 && (
                   <div className="table-wrapper">
-                    {blogs.map((blog) => (
+                    {blogs[0].numberOfApplies.map((blog) => (
                       <div className="d-flex comment">
                         <img
                           className="rounded-circle me-3"
                           src={`https://via.placeholder.com/130/${Math.floor(
                             Math.random() * 16777215
                           ).toString(16)}/ffcbde.png?text=${
-                            blog.UserName.split(" ")[0][0] +
-                            blog.UserName.split(" ")[1][0]
+                            blog.blogs.UserName.split(" ")[0][0] +
+                            blog.blogs.UserName.split(" ")[1][0]
                           }`}
                         />
                         <div className="flex-grow-1 ms-3">
@@ -168,41 +278,41 @@ const Blog = () => {
                             >
                               <Button
                                 onClick={() => {
-                                  getUser(blog.UserEmail);
+                                  getUser(blog.blogs.UserEmail);
                                 }}
                                 className="popoverButton"
                               >
-                                {blog.UserName}
+                                {blog.blogs.UserName}
                               </Button>
                             </OverlayTrigger>
                             <FontAwesomeIcon
                               className="eyeFaIcon"
-                              title={`Reply to ${blog.UserName}`}
+                              title={`Reply to ${blog.blogs.UserName}`}
                               onClick={() => {
-                                window.open(`/blogInfo/${blog._id}`);
+                                window.open(`/blogInfo/${blog.blogs._id}`);
                               }}
                               icon={faReply}
                               size="lg"
                             />{" "}
                             <br />{" "}
                             <span className="text-muted text-nowrap">
-                              {dateFormater(new Date(blog.QuestionDate))}
+                              {dateFormater(new Date(blog.blogs.QuestionDate))}
                             </span>
                           </div>
 
-                          <div className="mb-2 css">{blog.Question}</div>
+                          <div className="mb-2 css">{blog.blogs.Question}</div>
                           <div className="hstack align-items-center mb-2">
                             <a className="link-primary me-2" href="#">
                               <i className="zmdi zmdi-thumb-up"></i>
                             </a>
                             <span className="me-3 small">
-                              <strong></strong> aplies.
+                              <strong>{blog.numberOfApplies}</strong> aplies.
                             </span>
                             <a className="link-secondary me-4" href="#">
                               <i className="zmdi zmdi-thumb-down"></i>
                             </a>
 
-                            {blog.UserEmail === userEmail && (
+                            {blog.blogs.UserEmail === userEmail && (
                               <button
                                 className="btn btn-danger"
                                 title="Delete Question!"
