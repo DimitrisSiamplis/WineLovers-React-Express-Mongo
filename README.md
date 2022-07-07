@@ -1,5 +1,7 @@
 # WineLovers-React-Express-Mongo
 
+My application: 
+
 •	Find any wine.
 •	Discover the wine's world. 
 •	Rate and comment your bottle.
