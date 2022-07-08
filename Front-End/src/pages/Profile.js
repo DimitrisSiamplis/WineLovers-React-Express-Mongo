@@ -1,9 +1,21 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
+import { Chart } from "react-google-charts";
+import "./Profile.css";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Modal,
+  Alert,
+  PageItem,
+} from "react-bootstrap";
 
 const Profile = () => {
   const [userDetails, setUserDetails] = useState();
+  const [userCommentStatistic, setUserCommentStatistic] = useState([]);
 
   const cookies = new Cookies();
   var userEmail = cookies.get("email");
@@ -13,13 +25,118 @@ const Profile = () => {
     fetch(`http://localhost:4000/getUser/${userEmail}`)
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         setUserDetails(json);
+      });
+  };
+  const getUserComments = () => {
+    fetch(`http://localhost:4000/getUserComments/${userEmail}`)
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        setUserCommentStatistic([json]);
       });
   };
   useEffect(() => {
     getUser();
+    getUserComments();
   }, []);
+
+  const data = [
+    ["Task", "Hours per Day"],
+    [
+      "Total Comments",
+      userCommentStatistic.length !== 0
+        ? userCommentStatistic[0].numberOfComments
+        : 0,
+    ],
+    [
+      "User Comments",
+      userCommentStatistic.length !== 0
+        ? userCommentStatistic[0].numberOfUserComment
+        : 0,
+    ],
+  ];
+  const options = {
+    title: "My Comments Activities",
+  };
+
+  // -------------------Rate Pie ---------------------
+
+  // const dataRate = [
+  //   ["Task", "Hours per Day"],
+  //   [
+  //     "Rate with 1",
+  //     userCommentStatistic.length !== 0
+  //       ? Number(userCommentStatistic[0].ratesPerRate[0])
+  //       : 0,
+  //   ],
+  //   [
+  //     "Rate with 2",
+  //     userCommentStatistic.length !== 0
+  //       ? Number(userCommentStatistic[0].ratesPerRate[1])
+  //       : 0,
+  //   ],
+  //   ,
+  //   [
+  //     "Rate with 3",
+  //     userCommentStatistic.length !== 0
+  //       ? Number(userCommentStatistic[0].ratesPerRate[2])
+  //       : 0,
+  //   ],
+  //   ,
+  //   [
+  //     "Rate with 4",
+  //     userCommentStatistic.length !== 0
+  //       ? Number(userCommentStatistic[0].ratesPerRate[3])
+  //       : 0,
+  //   ],
+  //   ,
+  //   [
+  //     "Rate with 5",
+  //     userCommentStatistic.length !== 0
+  //       ? Number(userCommentStatistic[0].ratesPerRate[4])
+  //       : 0,
+  //   ],
+  // ];
+  const dataRate = [
+    ["Task", "Rate"],
+    [
+      "Rate with 1",
+      userCommentStatistic.length !== 0
+        ? Number(userCommentStatistic[0].ratesPerRate[0])
+        : 0,
+    ],
+    [
+      "Rate with 2",
+      userCommentStatistic.length !== 0
+        ? Number(userCommentStatistic[0].ratesPerRate[1])
+        : 0,
+    ],
+    [
+      "Rate with 3",
+      userCommentStatistic.length !== 0
+        ? Number(userCommentStatistic[0].ratesPerRate[2])
+        : 0,
+    ],
+    [
+      "Rate with 4",
+      userCommentStatistic.length !== 0
+        ? Number(userCommentStatistic[0].ratesPerRate[3])
+        : 0,
+    ],
+    [
+      "Rate with 5",
+      userCommentStatistic.length !== 0
+        ? Number(userCommentStatistic[0].ratesPerRate[4])
+        : 0,
+    ],
+  ];
+
+  console.log(dataRate);
+  console.log(data);
+  const optionsRate = {
+    title: "Rate Percent",
+  };
 
   return (
     <div>
@@ -104,6 +221,30 @@ const Profile = () => {
               </div>
             </div>
           </div>
+          <h5>Profile Statistic</h5>
+          <Row>
+            <Col xs={6}>
+              <Chart
+                className="pieChartComments"
+                chartType="PieChart"
+                data={data}
+                options={options}
+                width={"100%"}
+                height={"200px"}
+              />
+            </Col>
+
+            <Col xs={6}>
+              <Chart
+                className="pieChartComments"
+                chartType="PieChart"
+                data={dataRate}
+                options={optionsRate}
+                width={"100%"}
+                height={"200px"}
+              />
+            </Col>
+          </Row>
         </div>
       )}
     </div>

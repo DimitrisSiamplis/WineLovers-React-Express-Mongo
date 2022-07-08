@@ -3,7 +3,28 @@
     margin-top: 4%;
 }
 
-
-.loginUs .nav-link{
-   color: red;
+/* .darkAndLight{
+    background-color: white;
+   
+} */
+.sun{
+    color: goldenrod;
+    border-radius: 50%;
 }
+
+
+.night{
+    color: gray;
+    border-radius: 50%;
+}
+
+
+.night:hover{
+    cursor: pointer;
+    font-size: larger;
+}
+.sun:hover{
+    cursor: pointer;
+    font-size: larger;
+}
+

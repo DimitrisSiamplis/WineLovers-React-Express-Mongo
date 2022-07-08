@@ -174,7 +174,7 @@ router.get("/getBlogs", async (req, res) => {
     var aplyQuestion = await AplyQuestion.find({
       QuestionId: blogQuestion[key]._id,
     });
-    
+
     numberOfApplies.push({
       numberOfApplies: aplyQuestion.length,
       blogs: blogQuestion[key],
@@ -189,6 +189,39 @@ router.get("/getUser/:email", async (req, res) => {
   let user = await User.findOne({ Email: email });
   res.send({
     user: user,
+  });
+});
+
+router.get("/getUserComments/:email", async (req, res) => {
+  var email = req.params.email;
+  let user = await User.findOne({ Email: email });
+  let comments = await Comment.find();
+  let userComment = await Comment.find({ UserId: user._id });
+
+  var ratesPerRate = [0, 0, 0, 0, 0];
+  for (const key in userComment) {
+    if (userComment[key].Rating === 1) {
+      ratesPerRate[0] = ratesPerRate[0] + 1;
+    }
+    if (userComment[key].Rating === 2) {
+      ratesPerRate[1] = ratesPerRate[1] + 1;
+    }
+    if (userComment[key].Rating === 3) {
+      ratesPerRate[2] = ratesPerRate[2] + 1;
+    }
+    if (userComment[key].Rating === 4) {
+      ratesPerRate[3] = ratesPerRate[3] + 1;
+    }
+    if (userComment[key].Rating === 5) {
+      ratesPerRate[4] = ratesPerRate[4] + 1;
+    }
+  }
+  console.log(ratesPerRate);
+
+  res.send({
+    numberOfComments: comments.length,
+    numberOfUserComment: userComment.length,
+    ratesPerRate: ratesPerRate,
   });
 });
 
@@ -349,18 +382,22 @@ router.post("/changePassword", async (req, res) => {
 });
 
 router.post("/editProfile", async (req, res) => {
-  console.log(req.body);
-  let user = await User.findOne({ Email: req.body.email });
+  console.log(req.body.name, req.body.mobile, req.body.address);
 
-  if (user) {
-    res.send({
-      status: true,
-    });
-  } else {
-    res.send({
-      status: false,
-    });
-  }
+  await User.updateOne(
+    { Email: req.body.email },
+    {
+      $set: {
+        Name: req.body.name,
+        Mobile: req.body.mobile,
+        Address: req.body.address,
+      },
+    }
+  );
+
+  res.send({
+    status: true,
+  });
 });
 
 router.post("/newWineComment", async (req, res) => {
@@ -376,6 +413,28 @@ router.post("/newWineComment", async (req, res) => {
   });
 
   await comment.save();
+  res.send({
+    status: true,
+  });
+});
+
+router.post("/addWine", async (req, res) => {
+  console.log(req.body);
+  wine = new Wine({
+    WineName: req.body.wineName,
+    Type: req.body.Type,
+    Color: req.body.color,
+    Winery: req.body.winery,
+    Country: req.body.country,
+    Location: req.body.location,
+    Price: req.body.price,
+    Year: req.body.year,
+    ImageUrl: req.body.imageURL,
+    WineDescription: req.body.discription,
+    Grapes: req.body.grape,
+  });
+
+  await wine.save();
   res.send({
     status: true,
   });

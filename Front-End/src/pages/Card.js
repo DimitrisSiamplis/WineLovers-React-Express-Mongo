@@ -9,14 +9,17 @@ import { Alert } from "react-bootstrap";
 const Card = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [kindPayment, setKindPayment] = useState("");
-  const [address , setAddress] = useState("")
-  const [phoneNum , setPhoneNum] = useState("")
-  const [zipCode , setZipCode] = useState("")
+  const [address, setAddress] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
+  const [zipCode, setZipCode] = useState("");
   const [userDetails, setUseretails] = useState([]);
- 
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardDate, setCardDate] = useState("");
+  const [cardCVV, setCardCVV] = useState("");
 
   const cookies = new Cookies();
   var userEmail = cookies.get("email");
+  console.log(cookies.get("card"));
 
   // ------------ Get user Details -----------------
   const getUser = () => {
@@ -24,9 +27,9 @@ const Card = () => {
       .then((res) => res.json())
       .then((json) => {
         console.log(json.user);
-        setAddress(json.user.Address)
-        setPhoneNum(json.user.Mobile)
-        setUseretails([json])
+        setAddress(json.user.Address);
+        setPhoneNum(json.user.Mobile);
+        setUseretails([json]);
       });
   };
   useEffect(() => {
@@ -197,7 +200,7 @@ const Card = () => {
                     className="form-control credit-inputs"
                     placeholder="Atiki,Greece 31"
                     onChange={(e) => {
-                      setAddress(e.target.value)
+                      setAddress(e.target.value);
                     }}
                   />
                 </div>
@@ -208,11 +211,11 @@ const Card = () => {
                     className="form-control credit-inputs"
                     placeholder="15231"
                     onChange={(e) => {
-                      setZipCode(e.target.value)
+                      setZipCode(e.target.value);
                     }}
                   />
                 </div>
-                { zipCode !== "" && (  zipCode.length !==5  )     && (
+                {zipCode !== "" && zipCode.length !== 5 && (
                   <p className="alertMessage">Wrong Zip Code. Max length 5.</p>
                 )}
                 <br />
@@ -224,14 +227,17 @@ const Card = () => {
                     className="form-control credit-inputs"
                     placeholder="6999999999"
                     onChange={(e) => {
-                      setPhoneNum(e.target.value)
+                      setPhoneNum(e.target.value);
                     }}
                   />
                 </div>
-                
-                { phoneNum !== "" && (isNaN(phoneNum) ||  phoneNum.length > 10 || phoneNum.length < 10 )     && (
-                  <p className="alertMessage">Wrong Phone Number</p>
-                )}
+
+                {phoneNum !== "" &&
+                  (isNaN(phoneNum) ||
+                    phoneNum.length > 10 ||
+                    phoneNum.length < 10) && (
+                    <p className="alertMessage">Wrong Phone Number</p>
+                  )}
               </div>
               <hr className="line" />
               Kind of Payment
@@ -253,36 +259,67 @@ const Card = () => {
                   <hr className="line" />
                   Card Details
                   <div>
-                    <label className="credit-card-label">Name on card</label>
-                    <input
-                      type="text"
-                      className="form-control credit-inputs"
-                      placeholder="Name"
-                    />
-                  </div>
-                  <div>
                     <label className="credit-card-label">Card number</label>
                     <input
                       type="text"
                       className="form-control credit-inputs"
-                      placeholder="0000 0000 0000 0000"
+                      // maxLength="19"
+                      value={cardNumber}
+                      onChange={(e) => {
+                        console.log(e.target.value.length);
+                        if (
+                          (!isNaN(e.target.value[e.target.value.length - 1]) ||
+                            e.target.value === "") &&
+                          e.target.value.length < 16
+                        ) {
+                          setCardNumber(e.target.value);
+                        }
+                      }}
                     />
                   </div>
                   <div className="row">
                     <div className="col-md-6">
                       <label className="credit-card-label">Date</label>
                       <input
-                        type="text"
+                        type="search"
+                        value={
+                          cardDate.length == 2
+                            ? cardDate.slice(0, 2) + "/"
+                            : cardDate
+                        }
                         className="form-control credit-inputs"
                         placeholder="12/24"
+                        onChange={(e) => {
+                          if (e.target.value.length < 6) {
+                            var testArray = e.target.value.split("/");
+                            var newEtargetValue = "";
+                            for (const key in testArray) {
+                              newEtargetValue =
+                                newEtargetValue + testArray[key];
+                            }
+                            console.log(newEtargetValue);
+                            if (!isNaN(newEtargetValue)) {
+                              setCardDate(e.target.value);
+                            }
+                          }
+                        }}
                       />
                     </div>
                     <div className="col-md-6">
                       <label className="credit-card-label">CVV</label>
                       <input
-                        type="text"
+                        type="search"
                         className="form-control credit-inputs"
                         placeholder="342"
+                        value={cardCVV}
+                        onChange={(e) => {
+                          if (
+                            !isNaN(e.target.value) &&
+                            e.target.value.length < 4
+                          ) {
+                            setCardCVV(e.target.value);
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -319,9 +356,9 @@ const Card = () => {
                 onClick={onCreateOrder}
                 className="btn btn-primary btn-block d-flex justify-content-between mt-3"
               >
-                <span>$</span>
+               
                 <span>
-                  Checkout<i className="fa fa-long-arrow-right ml-1"></i>
+                  Complete Order<i className="fa fa-long-arrow-right ml-1"></i>
                 </span>
               </button>
             </div>

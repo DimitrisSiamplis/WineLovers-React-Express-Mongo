@@ -7,3 +7,11 @@ input {
     margin-right: 20%;
     margin-left: 20%;
 }
+
+
+.night{
+    width: 100%;
+    background-color: black;
+    color: white;
+    border-radius: 1%;
+}

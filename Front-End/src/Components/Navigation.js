@@ -1,17 +1,24 @@
 import React from "react";
 import "./Navigation.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWineBottle } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
-import { faBlog } from "@fortawesome/free-solid-svg-icons";
+
+import {
+  faCartPlus,
+  faUser,
+  faClock,
+  faBlog,
+  faWineBottle,
+  faSun,
+  faMoon,
+} from "@fortawesome/free-solid-svg-icons";
+
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 
 const Navigation = (props) => {
   const [userDetails, setUseretails] = useState([]);
+  const [nightOrLight, setNightOrLight] = useState("light");
 
   const cookies = new Cookies();
   var userEmail = cookies.get("email");
@@ -24,13 +31,23 @@ const Navigation = (props) => {
     fetch(`http://localhost:4000/getUser/${userEmail}`)
       .then((res) => res.json())
       .then((json) => {
-        console.log([json])
+        console.log([json]);
         setUseretails([json]);
       });
   };
   useEffect(() => {
     getUser();
   }, []);
+
+  const onSunHandler = () => {
+    setNightOrLight("light");
+    props.darkOrLightCallback("light");
+  };
+
+  const onDarkHandler = () => {
+    setNightOrLight("night");
+    props.darkOrLightCallback("night");
+  };
 
   return (
     <div>
@@ -99,7 +116,7 @@ const Navigation = (props) => {
                 <NavDropdown.Item href="/editProfile">
                   Edit Profile
                 </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">Add Wine</NavDropdown.Item>
+                <NavDropdown.Item href="/addWine">Add Wine</NavDropdown.Item>
 
                 <NavDropdown.Divider />
                 <NavDropdown.Item
@@ -112,22 +129,31 @@ const Navigation = (props) => {
               </NavDropdown>
             </Nav>
             <Nav>
-              
-                <Nav.Link className="loginUs">
-                 
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  
-                </Nav.Link>
-             
+              <Nav.Link className="loginUs">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </Nav.Link>
             </Nav>
             <Nav>
               {userDetails.length !== 0 && (
                 <Nav.Link className="loginUs">
-                 
-                  {userDetails[0].user.Name} 
-                  
+                  {userDetails[0].user.Name}
                 </Nav.Link>
               )}
+            </Nav>
+            <Nav className="darkAndLight">
+              <FontAwesomeIcon
+                className="sun"
+                icon={faSun}
+                size="lg"
+                onClick={onSunHandler}
+              />
+              &nbsp;
+              <FontAwesomeIcon
+                className="night"
+                icon={faMoon}
+                size="lg"
+                onClick={onDarkHandler}
+              />
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -12,6 +12,7 @@ const EditProfile = () => {
   const [newLastName, setNewLastName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newMobile, setNewMobile] = useState("");
+  const [newAddress , setNewAddress] = useState("")
 
   const cookies = new Cookies();
   var userEmail = cookies.get("email");
@@ -30,11 +31,12 @@ const EditProfile = () => {
     getUser();
   }, []);
 
-  const edit = (firstName, lastName, email, mobile) => {
+  const edit = (firstName, lastName, address, mobile) => {
     let userDetails = {
       name: firstName + " " + lastName,
-      email: email,
+      address: address,
       mobile: mobile,
+      email: userEmail
     };
     fetch("http://localhost:4000/editProfile", {
       method: "POST",
@@ -48,6 +50,7 @@ const EditProfile = () => {
         setNewLastName("");
         setNewEmail("");
         setNewMobile("");
+        getUser();
       });
   };
 
@@ -58,10 +61,11 @@ const EditProfile = () => {
         : newFirstName.trim();
     var lastName =
       newLastName === "" ? user[0].user.Name.split(" ")[1] : newLastName.trim();
-    var email = newEmail === "" ? user[0].user.Email : newEmail.trim();
+   // var email = newEmail === "" ? user[0].user.Email : newEmail.trim();
     var mobile = newMobile === "" ? user[0].user.Mobile : newMobile.trim();
-    edit(firstName, lastName, email, mobile);
-    console.log(firstName, lastName, email, mobile);
+    var address = newAddress ==="" ? user[0].user.Address : newAddress.trim()
+    edit(firstName, lastName, address, mobile);
+    
   };
 
   return (
@@ -156,23 +160,23 @@ const EditProfile = () => {
               <Row>
                 <Col xs={6}>
                   <div className="inputDiv">
-                    <label className="inputLabel">Email</label>
+                    <label className="inputLabel">Address</label>
                     <input
-                      value={newEmail}
-                      type="email"
+                      value={newAddress}
+                      type="text"
                       id="editText"
-                      placeholder={user[0].user.Email}
+                      placeholder={user[0].user.Address}
                       onChange={(e) => {
-                        setNewEmail(e.target.value);
+                        setNewAddress(e.target.value);
                       }}
                     />
                   </div>
-                  {newEmail !== "" && !validateEmail(newEmail) && (
+                  {/* {newAddress !== ""  && (
                     <p className="alertMessage">
                       {" "}
                       Email must iclude '@'' and '.'{" "}
                     </p>
-                  )}
+                  )} */}
                 </Col>
                 <Col xs={6}>
                   <div className="buttonWrapper">

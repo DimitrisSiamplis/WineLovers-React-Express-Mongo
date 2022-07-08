@@ -2,6 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
+import { FaMapMarkerAlt } from "react-icons/fa";
 import {
   Button,
   Container,
@@ -11,17 +12,25 @@ import {
   Modal,
   Alert,
   PageItem,
+  Pagination,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCartPlus,
+  faFilter,
+  faStar,
+  faSearchLocation,
+} from "@fortawesome/free-solid-svg-icons";
+
 import "./Wines.css";
 
 const Wines = () => {
   let history = useHistory();
 
   const [initialWines, setInitialWines] = useState([]);
+  const [secondaryWines, setSecondaryWines] = useState([]);
+  const [pagination, setPagination] = useState([1]);
+  const [pageSelected, setPageSelected] = useState(1);
   const [wines, setWines] = useState([]);
   const [selectedWineId, setSelectedWineId] = useState("");
   const [showFilter, setShowFilter] = useState(true);
@@ -68,7 +77,8 @@ const Wines = () => {
 
         setWines([json]);
         setInitialWines([json]);
-
+        setSecondaryWines([json]);
+        setPageSelected(1);
         var colors = [];
         var types = [];
         var years = [];
@@ -96,6 +106,32 @@ const Wines = () => {
     getWines();
   }, []);
 
+  // ----------- when wines length Change --------------
+  useEffect(() => {
+    if (wines.length !== 0) {
+      var paginationArray = [];
+      for (let i = 0; i < wines[0].wines.length / 5; i++) {
+        paginationArray.push(i + 1);
+      }
+
+      setPagination(paginationArray);
+    }
+  }, [wines]);
+
+  // ---------- when page Selected Change ------------
+  // useEffect(() => {
+  //   var oldWines = wines;
+  //   var newWineArray = [];
+  //   var newArray = oldWines[0].wines.splice(
+  //     (pageSelected - 1) * 5,
+  //     pageSelected * 5
+  //   );
+  //   newWineArray.push({ wines: newArray });
+  //   console.log(newWineArray)
+  //   // setSecondaryWines(wines.slice((pageSelected - 1) * 5, pageSelected * 5));
+  // }, [pageSelected]);
+
+  // ------ FILTER Wines ------------
   const filterWines = () => {
     var oldWines = initialWines;
 
@@ -439,10 +475,10 @@ const Wines = () => {
                       <Container className="item">
                         <div
                           className="card card-body wine"
-                          onClick={() => {
-                            console.log(item.wine._id);
-                            history.push("/wine/" + item.wine._id);
-                          }}
+                          // onClick={() => {
+                          //   console.log(item.wine._id);
+                          //   history.push("/wine/" + item.wine._id);
+                          // }}
                         >
                           <div className="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
                             <div className="mr-2 mb-3 mb-lg-0">
@@ -493,6 +529,7 @@ const Wines = () => {
                                     className="text-muted"
                                     data-abc="true"
                                   >
+                                    <FaMapMarkerAlt />&nbsp;
                                     {item.wine.Location} , {item.wine.Country}
                                   </a>
                                 </li>
@@ -509,7 +546,11 @@ const Wines = () => {
                                 <li className="list-inline-item">
                                   {" "}
                                   <strong>Winery by</strong>{" "}
-                                  <a href="#" data-abc="true">
+                                  <a
+                                    target="_blank"
+                                    href={`https://www.google.com/search?q=${item.wine.Winery}`}
+                                    data-abc="true"
+                                  >
                                     {" "}
                                     {item.wine.Winery}{" "}
                                   </a>
@@ -546,21 +587,21 @@ const Wines = () => {
                                 title="Add to Card"
                                 onClick={() => {
                                   setSelectedWineId(
-                                    item._id +
+                                    item.wine._id +
                                       "," +
-                                      item.WineName +
+                                      item.wine.WineName +
                                       "," +
-                                      item._id +
+                                      item.wine._id +
                                       "," +
-                                      item.Color +
+                                      item.wine.Color +
                                       "," +
-                                      item.Type +
+                                      item.wine.Type +
                                       "," +
-                                      item.Price +
+                                      item.wine.Price +
                                       "," +
-                                      item.ImageUrl
+                                      item.wine.ImageUrl
                                   );
-                                  handleShow(item._id);
+                                  handleShow(item.wine._id);
                                 }}
                               >
                                 <FontAwesomeIcon icon={faCartPlus} size="1x" />
@@ -574,6 +615,27 @@ const Wines = () => {
                 ))}
               </Row>
             )}
+            <br />
+            <br />
+            <Pagination>
+              <Pagination.First />
+              <Pagination.Prev />
+              {pagination.map((page) => (
+                <div>
+                  <Pagination.Item
+                    active={page === pageSelected ? true : false}
+                    onClick={() => {
+                      setPageSelected(page);
+                    }}
+                  >
+                    {page}
+                  </Pagination.Item>
+                </div>
+              ))}
+
+              <Pagination.Next />
+              <Pagination.Last />
+            </Pagination>
           </Container>
         </div>
       </div>

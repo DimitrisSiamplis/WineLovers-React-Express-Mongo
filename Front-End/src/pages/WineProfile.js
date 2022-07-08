@@ -139,8 +139,6 @@ const WineProfile = () => {
                         </ul>
                       </div>
                       <div className="mt-3 mt-lg-0 ml-lg-3 text-center">
-                       
-                        
                         <div className="text-muted">
                           {" "}
                           {wine.Comments.length} reviews{" "}
@@ -156,12 +154,12 @@ const WineProfile = () => {
                             size="1x"
                           />{" "}
                         </div>
-                        <br/>
+                        <br />
                         {/* <h3 className="mb-0 font-weight-semibold">
                           {" "}
                           Price : {wine.wine.Price}€
                         </h3> */}
-                       
+
                         <ul className="list-inline list-inline-dotted mb-0">
                           <li className="list-inline-item">
                             {" "}
@@ -171,12 +169,16 @@ const WineProfile = () => {
                           <li className="list-inline-item">
                             {" "}
                             <strong>Winery by</strong>{" "}
-                            <a href="#" data-abc="true">
+                            <a
+                              target="_blank"
+                              href={`https://www.google.com/search?q=${wine.wine.Winery}`}
+                              data-abc="true"
+                            >
                               {" "}
                               {wine.wine.Winery}{" "}
                             </a>
                           </li>
-                          <br />  <br />
+                          <br /> <br />
                         </ul>
                         <strong>Wine discription</strong>
                         <p className="mb-3">{wine.wine.WineDescription}</p>

@@ -265,7 +265,7 @@ exports.editProfile = async (req, res) => {
           Name: req.body.newName,
           Mobile: req.body.newMobile,
           Address: req.body.newAddress,
-        },
+        }
       }
     );
 

@@ -13,7 +13,8 @@ import History from "./pages/History";
 import BlogInfo from "./pages/BlogInfo";
 import ChangePassword from "./pages/ChangePassword";
 import EditProfile from "./pages/EditProfile";
-import {  Container, Row, Col, Alert } from "react-bootstrap";
+import AddWine from "./pages/AddWine";
+import { Container, Row, Col, Alert } from "react-bootstrap";
 import Profile from "./pages/Profile";
 import WineProfile from "./pages/WineProfile";
 import { useState, useEffect } from "react";
@@ -23,10 +24,16 @@ function App() {
   const [isLogin, setIsLogin] = useState(false);
   const [Email, setEmail] = useState(false);
   const [loginMessage, setLoginMessage] = useState(false);
-
+  const [nightOrLight, setNightOrLight] = useState("light");
   const cookies = new Cookies();
 
   var userEmail = cookies.get("email");
+
+  const darkOrLightCallback = (childData) => {
+    setNightOrLight(childData);
+  };
+
+  console.log(nightOrLight);
 
   const handleCallback = (email) => {
     setEmail(email);
@@ -61,10 +68,13 @@ function App() {
   }, [Email]);
 
   return (
-    <div>
+    <div className={nightOrLight}>
       {isLogin && (
         <div>
-          <Navigation handleCallback={handleLogoutCallback} />
+          <Navigation
+            handleCallback={handleLogoutCallback}
+            darkOrLightCallback={darkOrLightCallback}
+          />
           {loginMessage && (
             <Alert className="loginAlert" variant="success">
               User succesfully Login !
@@ -76,7 +86,7 @@ function App() {
             </Route>
 
             <Route exact path="/wines">
-              <Wines />
+              <Wines className={nightOrLight} />
             </Route>
             <Route exact path="/wine/:id">
               <WineProfile />
@@ -103,7 +113,11 @@ function App() {
               <Profile />
             </Route>
             <Route exact path="/editProfile">
-              <EditProfile/>
+              <EditProfile />
+            </Route>
+
+            <Route exact path="/addWine">
+              <AddWine />
             </Route>
           </Switch>
         </div>
