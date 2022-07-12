@@ -1,0 +1,11 @@
+
+
+.cardStyle.helpUs{
+    width: 100%;
+    border-color: white;
+    background: #fff;
+    padding: 36px 0;
+    border-radius: 4px;
+    margin: 30px 0;
+    box-shadow: 0px 0 2px 0 rgba(0,0,0,0.25);
+}

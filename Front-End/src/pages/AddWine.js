@@ -1,8 +1,8 @@
 import React from "react";
 import "./AddWine.css";
 import { Container, Col, Row, Button, Modal, Alert } from "react-bootstrap";
-import { useEffect, useState } from "react";
-import Multiselect from "multiselect-react-dropdown";
+import { useState } from "react";
+
 
 const AddWine = () => {
   const allGrapes = [

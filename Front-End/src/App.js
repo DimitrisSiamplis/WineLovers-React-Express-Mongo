@@ -14,6 +14,9 @@ import BlogInfo from "./pages/BlogInfo";
 import ChangePassword from "./pages/ChangePassword";
 import EditProfile from "./pages/EditProfile";
 import AddWine from "./pages/AddWine";
+import FoodAndWine from "./pages/FoodAndWine";
+import Guide from "./pages/Guide";
+import HelpUs from "./pages/HelpUs";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import Profile from "./pages/Profile";
 import WineProfile from "./pages/WineProfile";
@@ -118,6 +121,18 @@ function App() {
 
             <Route exact path="/addWine">
               <AddWine />
+            </Route>
+
+            <Route exact path="/foodAndWine">
+              <FoodAndWine />
+            </Route>
+
+            <Route exact path="/helpUs">
+              <HelpUs />
+            </Route>
+
+            <Route exact path="/wineGuide">
+              <Guide />
             </Route>
           </Switch>
         </div>

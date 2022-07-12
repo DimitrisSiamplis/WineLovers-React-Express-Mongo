@@ -10,6 +10,7 @@ import {
   faWineBottle,
   faSun,
   faMoon,
+  faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
@@ -94,12 +95,21 @@ const Navigation = (props) => {
                 />{" "}
               </Nav.Link>
               &nbsp;&nbsp;
-              <NavDropdown title="Actions" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="#action/3.2">Help Us</NavDropdown.Item>
+              <Nav.Link href="/foodAndWine">
+                Food & Wine &nbsp;
+                <FontAwesomeIcon
+                  className="faIcons"
+                  icon={faUtensils}
+                  size="lg"
+                />{" "}
+              </Nav.Link>
+              &nbsp;&nbsp;
+              <NavDropdown title="More" id="collasible-nav-dropdown">
+                <NavDropdown.Item href="/helpUs">Help Us</NavDropdown.Item>
 
                 {/* <NavDropdown.Divider /> */}
-                <NavDropdown.Item href="#action/3.4">
-                  Statistics
+                <NavDropdown.Item href="/wineGuide">
+                  Wine Guide
                 </NavDropdown.Item>
               </NavDropdown>
             </Nav>
@@ -139,21 +149,6 @@ const Navigation = (props) => {
                   {userDetails[0].user.Name}
                 </Nav.Link>
               )}
-            </Nav>
-            <Nav className="darkAndLight">
-              <FontAwesomeIcon
-                className="sun"
-                icon={faSun}
-                size="lg"
-                onClick={onSunHandler}
-              />
-              &nbsp;
-              <FontAwesomeIcon
-                className="night"
-                icon={faMoon}
-                size="lg"
-                onClick={onDarkHandler}
-              />
             </Nav>
           </Navbar.Collapse>
         </Container>
